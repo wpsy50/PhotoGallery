@@ -1,0 +1,27 @@
+.navbar .logo {
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+.navbar .eye {
+    background-color: #ffffff;
+    position: relative;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border: 2px solid #000;
+    border-radius: 50%;
+    margin: 0 0.05em;
+    vertical-align: middle;
+}
+
+.navbar .pupil {
+    position: absolute;
+    width: 0.3em;
+    height: 0.3em;
+    background: #000;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
