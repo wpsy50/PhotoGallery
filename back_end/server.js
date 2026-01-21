@@ -39,3 +39,17 @@ app.get('/api/albums', (req, res) =>
   );
   res.json(album_list);
 });
+
+app.get('/api/albums/:album_id', (req, res) =>
+{
+  const album_id = Number(req.params.album_id);
+  const album = albums.find(a => a.album_id === album_id);
+
+  if (!album)
+  {
+    return res.status(404).json({ error: 'Album not found' });
+  }
+
+  const album_photos = photos.filter(p => p.album_id === album_id);
+  res.json({ ...album, photos: album_photos });
+});
