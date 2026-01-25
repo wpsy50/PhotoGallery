@@ -60,16 +60,46 @@ app.post('/api/albums', (req, res) =>
 
     if (!title)
     {
-        return res.status(404).json({ error: 'Title is required' });
+        return res.status(400).json({ error: 'Title is required' });
     }
 
     const new_album = 
     {
-        id: albums.length + 1,
+        album_id: albums.length + 1,
+        user_id: 1,
         title,
         description: description || '',
+        created_at: new Date().toISOString().split('T')[0],
+        last_updated: new Date().toISOString().split('T')[0]
     };
 
       albums.push(new_album);
       res.json(new_album);
+});
+
+app.get('/api/photos', (req, res) =>
+{
+    const photo_list = photos.map(p =>
+    ({
+        photo_id: p.photo_id,
+        album_id: p.album_id,
+        user_id: p.user_id,
+        caption: p.caption,
+        url: p.url,
+        uploaded_at: p.uploaded_at
+    }));
+    res.json(photo_list);
+});
+
+app.get('/api/photos/:photo_id', (req, res) =>
+{
+    const photo_id = Number(req.params.photo_id);
+    const photo = photos.find(p => p.photo_id === photo_id);
+
+    if (!photo)
+    {
+        return res.status(404).json({ error: 'Photo not found' });
+    }
+
+    res.json(photo);
 });
