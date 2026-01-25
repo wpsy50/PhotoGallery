@@ -103,3 +103,32 @@ app.get('/api/photos/:photo_id', (req, res) =>
 
     res.json(photo);
 });
+
+app.post('/api/photos', (req, res) =>
+{
+    const { album_id, url, caption } = req.body;
+
+    if (!album_id || !url)
+    {
+        return res.status(400).json({ error: 'Album ID and URL are required' });
+    }
+
+    const albumExists = albums.some(a => a.album_id === album_id);
+    if (!albumExists)
+    {
+        return res.status(400).json({ error: 'Album does not exist' });
+    }
+
+    const new_photo =
+    {
+        photo_id: photos.length + 1,
+        album_id,
+        user_id: 1,
+        url,
+        caption: caption || '',
+        uploaded_at: new Date().toISOString().split('T')[0]
+    };
+
+    photos.push(new_photo);
+    res.json(new_photo);
+});
