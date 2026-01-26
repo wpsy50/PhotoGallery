@@ -15,9 +15,9 @@ let photos =
     { photo_id: 1, album_id: 1, user_id: 1, url: 'radiohead.jpg', caption: 'Radiohead in the O2 arena', uploaded_at: '24-11-2025' },
 ]
 
-app.get('/api/test', (req, res) => 
+app.get('/api/test', (request, result) => 
 {
-    res.json({ message: 'Server is working!' });
+    result.json({ message: 'Server is working!' });
 });
 
 app.listen(PORT, () => 
@@ -25,7 +25,7 @@ app.listen(PORT, () =>
     console.log(`Server running at http://localhost:${PORT}`);
 });
 
-app.get('/api/albums', (req, res) =>
+app.get('/api/albums', (request, result) =>
 {
     const album_list = albums.map(a => 
         ({
@@ -37,30 +37,30 @@ app.get('/api/albums', (req, res) =>
             last_updated: a.last_updated
         })
     );
-    res.json(album_list);
+    result.json(album_list);
 });
 
-app.get('/api/albums/:album_id', (req, res) =>
+app.get('/api/albums/:album_id', (request, result) =>
 {
-    const album_id = Number(req.params.album_id);
+    const album_id = Number(request.params.album_id);
     const album = albums.find(a => a.album_id === album_id);
 
     if (!album)
     {
-        return res.status(404).json({ error: 'Album not found' });
+        return result.status(404).json({ error: 'Album not found' });
     }
 
     const album_photos = photos.filter(p => p.album_id === album_id);
-    res.json({ ...album, photos: album_photos });
+    result.json({ ...album, photos: album_photos });
 });
 
-app.post('/api/albums', (req, res) =>
+app.post('/api/albums', (request, result) =>
 {
-    const { title, description } = req.body;
+    const { title, description } = request.body;
 
     if (!title)
     {
-        return res.status(400).json({ error: 'Title is required' });
+        return result.status(400).json({ error: 'Title is required' });
     }
 
     const new_album = 
@@ -74,10 +74,10 @@ app.post('/api/albums', (req, res) =>
     };
 
       albums.push(new_album);
-      res.json(new_album);
+      result.json(new_album);
 });
 
-app.get('/api/photos', (req, res) =>
+app.get('/api/photos', (request, result) =>
 {
     const photo_list = photos.map(p =>
     ({
@@ -88,35 +88,35 @@ app.get('/api/photos', (req, res) =>
         url: p.url,
         uploaded_at: p.uploaded_at
     }));
-    res.json(photo_list);
+    result.json(photo_list);
 });
 
-app.get('/api/photos/:photo_id', (req, res) =>
+app.get('/api/photos/:photo_id', (request, result) =>
 {
-    const photo_id = Number(req.params.photo_id);
+    const photo_id = Number(request.params.photo_id);
     const photo = photos.find(p => p.photo_id === photo_id);
 
     if (!photo)
     {
-        return res.status(404).json({ error: 'Photo not found' });
+        return result.status(404).json({ error: 'Photo not found' });
     }
 
-    res.json(photo);
+    result.json(photo);
 });
 
-app.post('/api/photos', (req, res) =>
+app.post('/api/photos', (request, result) =>
 {
-    const { album_id, url, caption } = req.body;
+    const { album_id, url, caption } = request.body;
 
     if (!album_id || !url)
     {
-        return res.status(400).json({ error: 'Album ID and URL are required' });
+        return result.status(400).json({ error: 'Album ID and URL are required' });
     }
 
     const albumExists = albums.some(a => a.album_id === album_id);
     if (!albumExists)
     {
-        return res.status(400).json({ error: 'Album does not exist' });
+        return result.status(400).json({ error: 'Album does not exist' });
     }
 
     const new_photo =
@@ -130,5 +130,5 @@ app.post('/api/photos', (req, res) =>
     };
 
     photos.push(new_photo);
-    res.json(new_photo);
+    result.json(new_photo);
 });
