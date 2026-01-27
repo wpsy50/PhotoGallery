@@ -1,9 +1,13 @@
 import express from 'express';
 import fs from 'fs';
+import multer from 'multer';
+import path from 'path';
 const app = express();
+app.use('/data/uploads', express.static(path.join(process.cwd(), 'data/uploads')));
 const PORT = 3000
 const ALBUMS_PATH = './data/albums.json';
 const PHOTOS_PATH = './data/photos.json';
+const upload = multer({ dest: './data/uploads/' });
 
 app.use(express.static('public'));
 app.use(express.json());
@@ -24,6 +28,16 @@ try
 catch (error)
 {
     console.error('Error reading albums data:', error);
+}
+
+try
+{
+    const data = fs.readFileSync(PHOTOS_PATH, 'utf-8');
+    photos = JSON.parse(data);
+}
+catch (error)
+{
+    console.error('Error reading photos data:', error);
 }
 
 app.listen(PORT, () => 
@@ -108,30 +122,32 @@ app.get('/api/photos/:photo_id', (request, result) =>
     result.json(photo);
 });
 
-app.post('/api/photos', (request, result) =>
+app.post('/api/photos', upload.single('photo_file'), (request, result) =>
 {
-    const { album_id, url, caption } = request.body;
+    const { album_id, caption } = request.body;
+    const file = request.file;
 
-    if (!album_id || !url)
+    if (!album_id || !file)
     {
         return result.status(400).json({ error: 'Album ID and URL are required' });
     }
 
-    const albumExists = albums.some(a => a.album_id === album_id);
-    if (!albumExists)
-    {
-        return result.status(400).json({ error: 'Album does not exist' });
-    }
+    const file_extension = path.extname(file.originalname);
+    const new_filename = file.filename + file_extension;
+    fs.renameSync(file.path, path.join('./data/uploads/', new_filename));
 
     const new_photo =
     {
         photo_id: photos.length + 1,
-        album_id,
-        url,
+        album_id: Number(album_id),
+        url: '/data/uploads/' + new_filename,
         caption: caption || '',
         uploaded_at: new Date().toISOString().split('T')[0]
     };
 
     photos.push(new_photo);
+    fs.writeFileSync(PHOTOS_PATH, JSON.stringify(photos, null, 2));
     result.json(new_photo);
 });
+
+app.use('/data/uploads', express.static(path.join(process.cwd(), 'data/uploads')));

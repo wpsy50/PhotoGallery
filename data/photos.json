@@ -1,1 +1,23 @@
-[]
+[
+  {
+    "photo_id": 1,
+    "album_id": 1,
+    "url": "/data/uploads/02b7a141be04f7a073a555e3abaae953.png",
+    "caption": "Radiohead Concert",
+    "uploaded_at": "2026-01-27"
+  },
+  {
+    "photo_id": 2,
+    "album_id": 1,
+    "url": "/data/uploads/a1ac5350bcd9ebf2202c261e261f3704.png",
+    "caption": "YNot Festival Lineup",
+    "uploaded_at": "2026-01-27"
+  },
+  {
+    "photo_id": 3,
+    "album_id": 2,
+    "url": "/data/uploads/1e61c087fd5b18710c1655b280462406.jpg",
+    "caption": "Durham University",
+    "uploaded_at": "2026-01-27"
+  }
+]
