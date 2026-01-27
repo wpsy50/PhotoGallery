@@ -7,12 +7,12 @@ app.use(express.json());
 
 let albums = 
 [
-    { album_id: 1, user_id: 1, title: 'Concerts', description: 'Live concert photos', created_at: '01-08-2025', last_updated: '24-11-2025' }
+    { album_id: 1, title: 'Concerts', description: 'Live concert photos', created_at: '01-08-2025', last_updated: '24-11-2025' }
 ];
 
 let photos = 
 [
-    { photo_id: 1, album_id: 1, user_id: 1, url: 'radiohead.jpg', caption: 'Radiohead in the O2 arena', uploaded_at: '24-11-2025' },
+    { photo_id: 1, album_id: 1, url: 'radiohead.jpg', caption: 'Radiohead in the O2 arena', uploaded_at: '24-11-2025' },
 ]
 
 app.get('/api/test', (request, result) => 
@@ -30,7 +30,6 @@ app.get('/api/albums', (request, result) =>
     const album_list = albums.map(a => 
         ({
             album_id: a.album_id,
-            user_id: a.user_id,
             title: a.title,
             description: a.description,
             created_at: a.created_at,
@@ -66,7 +65,6 @@ app.post('/api/albums', (request, result) =>
     const new_album = 
     {
         album_id: albums.length + 1,
-        user_id: 1,
         title,
         description: description || '',
         created_at: new Date().toISOString().split('T')[0],
@@ -83,7 +81,6 @@ app.get('/api/photos', (request, result) =>
     ({
         photo_id: p.photo_id,
         album_id: p.album_id,
-        user_id: p.user_id,
         caption: p.caption,
         url: p.url,
         uploaded_at: p.uploaded_at
@@ -123,7 +120,6 @@ app.post('/api/photos', (request, result) =>
     {
         photo_id: photos.length + 1,
         album_id,
-        user_id: 1,
         url,
         caption: caption || '',
         uploaded_at: new Date().toISOString().split('T')[0]

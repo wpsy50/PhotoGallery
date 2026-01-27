@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "node back_end/server.js"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
