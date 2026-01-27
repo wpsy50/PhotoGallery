@@ -1,24 +1,30 @@
 import express from 'express';
+import fs from 'fs';
 const app = express();
 const PORT = 3000
+const ALBUMS_PATH = './data/albums.json';
+const PHOTOS_PATH = './data/photos.json';
 
 app.use(express.static('public'));
 app.use(express.json());
 
-let albums = 
-[
-    { album_id: 1, title: 'Concerts', description: 'Live concert photos', created_at: '01-08-2025', last_updated: '24-11-2025' }
-];
-
-let photos = 
-[
-    { photo_id: 1, album_id: 1, url: 'radiohead.jpg', caption: 'Radiohead in the O2 arena', uploaded_at: '24-11-2025' },
-]
+let albums = [];
+let photos = [];
 
 app.get('/api/test', (request, result) => 
 {
     result.json({ message: 'Server is working!' });
 });
+
+try
+{
+    const data = fs.readFileSync(ALBUMS_PATH, 'utf-8');
+    albums = JSON.parse(data);
+}
+catch (error)
+{
+    console.error('Error reading albums data:', error);
+}
 
 app.listen(PORT, () => 
 {
@@ -72,6 +78,7 @@ app.post('/api/albums', (request, result) =>
     };
 
       albums.push(new_album);
+      fs.writeFileSync(ALBUMS_PATH, JSON.stringify(albums, null, 2));
       result.json(new_album);
 });
 
