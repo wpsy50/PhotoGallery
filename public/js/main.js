@@ -38,7 +38,7 @@ function load_albums()
         })
         .catch(function(error)
         {
-            var row = document.querySelector('.row.g-4');
+            var row = document.getElementById('album_grid');
             row.innerHTML = '<p class="text-danger">Error loading albums.</p>';
             console.error(error);
         });
@@ -53,8 +53,8 @@ function load_album_photos(album_id)
         })
         .then(function(album)
         {
-            var row = document.querySelector('.row.g-4');
-            row.innerHTML = '<h2>' + album.title + '</h2>';
+            var grid = document.getElementById('album_grid');
+            grid.innerHTML = '';
 
             var back = document.createElement('div');
             back.className = 'col-12 mb-3';
@@ -63,16 +63,19 @@ function load_album_photos(album_id)
             {
                 load_albums();
             });
-            row.appendChild(back);
+            grid.appendChild(back);
 
             var title = document.createElement('div');
-            title.className = 'col-12';
-            title.innerHTML = '<h3 class="mb-4">' + album.title + '</h3>';
-            row.appendChild(title);
+            title.className = 'col-12 mb-3';
+            title.innerHTML = '<h3>' + album.title + '</h3>';
+            grid.appendChild(title);
 
             if (album.photos.length === 0)
             {
-                row.innerHTML += '<p>No photos in this album.</p>';
+                var no_photos = document.createElement('div');
+                no_photos.className = 'col-12';
+                no_photos.innerHTML = '<p>No photos in this album.</p>';
+                grid.appendChild(no_photos);
                 return;
             }
 
@@ -89,13 +92,13 @@ function load_album_photos(album_id)
                         '</div>' +
                     '</div>';
 
-                row.appendChild(col);
+                grid.appendChild(col);
             });
         })
         .catch(function(error)
         {
-            var row = document.querySelector('.row.g-4');
-            row.innerHTML = '<p class="text-danger">Error loading album photos.</p>';
+            var grid = document.getElementById('album_grid');
+            grid.innerHTML = '<p class="text-danger">Error loading album photos.</p>';
             console.error(error);
         });
 }
@@ -118,6 +121,12 @@ function create_album(event)
     .then(response => response.json())
     .then(album =>
     {
-        console.log('Album created:', album);
+        document.getElementById("create_album_form").reset();
+        load_albums();
+    })
+    .catch(error =>
+    {
+        console.error('Error creating album:', error);
+        alert('Error creating album. Please try again.');
     });
 }
