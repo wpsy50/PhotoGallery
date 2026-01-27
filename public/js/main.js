@@ -12,7 +12,7 @@ function load_albums()
         })
         .then(function(albums)
         {
-            var row = document.querySelector('.row.g-4');
+            var row = document.getElementById('album_grid');
             row.innerHTML = '';
 
             albums.forEach(function(album)
@@ -98,4 +98,26 @@ function load_album_photos(album_id)
             row.innerHTML = '<p class="text-danger">Error loading album photos.</p>';
             console.error(error);
         });
+}
+
+document.getElementById('create_album_form').addEventListener("submit", create_album);
+
+function create_album(event)
+{
+    event.preventDefault();
+
+    const title = document.getElementById("title").value;
+    const description = document.getElementById("description").value;
+
+    fetch('/api/albums',
+    {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description })
+    })
+    .then(response => response.json())
+    .then(album =>
+    {
+        console.log('Album created:', album);
+    });
 }

@@ -31,13 +31,22 @@
 
         <div class="row g-4">
 
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card h-100">
-                    <img src="https://picsum.photos/400/300" class="card-img-top" alt="Sample photo">
-                    <div class="card-body">
-                        <h6 class="card-title mb-1">Photo title</h6>
-                        <p class="card-text text-muted small">Optional caption</p>
-                    </div>
+            <!-- Sidebar -->
+             <div class="col-12 col-md-3">
+                <div class="card p-3">
+                    <h5>Create Album</h5>
+                    <form id="create_album_form">
+                        <input id="title" required placeholder="Album title">
+                        <input id="description" placeholder="Description">
+                        <button type="submit">Create Album</button>
+                    </form>
+                </div>
+             </div>
+
+            <!-- Album Grid -->
+            <div class="col-12 col-md-9">
+                <div class="row g-4" id="album_grid">
+                    
                 </div>
             </div>
 
