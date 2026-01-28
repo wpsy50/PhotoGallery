@@ -1,0 +1,9 @@
+[
+  {
+    "photo_id": 1,
+    "album_id": 1,
+    "caption": "Test Photo",
+    "url": "/data/uploads/test_photo.jpg",
+    "uploaded_at": "15-11-2006"
+  }
+]

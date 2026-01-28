@@ -1,14 +1,27 @@
-import express from 'express';
-import fs from 'fs';
-import multer from 'multer';
-import path from 'path';
+const express = require('express');
+const fs = require('fs');
+const multer = require('multer');
+const path = require('path');
 
 const app = express();
 app.use('/data/uploads', express.static(path.join(process.cwd(), 'data/uploads')));
-const PORT = 3000
-const ALBUMS_PATH = './data/albums.json';
-const PHOTOS_PATH = './data/photos.json';
-const upload = multer({ dest: './data/uploads/' });
+const isTest = process.env.NODE_ENV === 'test';
+let ALBUMS_PATH;
+let PHOTOS_PATH;
+let upload;
+
+if (isTest)
+{
+    ALBUMS_PATH = './data/tests/test_albums.json';
+    PHOTOS_PATH = './data/tests/test_photos.json';
+    upload = multer({ dest: './data/tests/test_uploads/' });
+}
+else
+{
+    ALBUMS_PATH = './data/albums.json';
+    PHOTOS_PATH = './data/photos.json';
+    upload = multer({ dest: './data/uploads/' });
+}
 
 app.use(express.static('public'));
 app.use(express.json());
@@ -41,10 +54,11 @@ catch (error)
     console.error('Error reading photos data:', error);
 }
 
-app.listen(PORT, () => 
+if (process.env.NODE_ENV !== 'test')
 {
-    console.log(`Server running at http://localhost:${PORT}`);
-});
+    app.listen(3000);
+    console.log(`Server running at http://localhost:3000`);
+}
 
 app.get('/api/albums', (request, result) =>
 {
@@ -135,7 +149,16 @@ app.post('/api/photos', upload.single('photo_file'), (request, result) =>
 
     const file_extension = path.extname(file.originalname);
     const new_filename = file.filename + file_extension;
-    fs.renameSync(file.path, path.join('./data/uploads/', new_filename));
+    let upload_path;
+    if (isTest)
+    {
+        upload_path = './data/tests/test_uploads/';
+    }
+    else
+    {
+        upload_path = './data/uploads/';
+    }
+    fs.renameSync(file.path, path.join(upload_path, new_filename));
 
     const new_photo =
     {
@@ -164,7 +187,17 @@ app.delete('/api/photos/:photo_id', (request, result) =>
     }
 
     const photo = photos[photo_index];
-    const file_path = path.join('./data/uploads/', path.basename(photo.url));
+    let upload_path;
+    if (isTest)
+    {
+        upload_path = './data/tests/test_uploads/';
+    }
+    else
+    {
+        upload_path = './data/uploads/';
+    }
+
+    const file_path = path.join(upload_path, path.basename(photo.url));
 
     fs.unlink(file_path, error =>
     {
@@ -179,3 +212,5 @@ app.delete('/api/photos/:photo_id', (request, result) =>
 
     result.json({ message: 'Photo deleted successfully' });
 });
+
+module.exports = app;

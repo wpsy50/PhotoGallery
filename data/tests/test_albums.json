@@ -1,0 +1,9 @@
+[
+  {
+    "album_id": 1,
+    "title": "Test Album",
+    "description": "This is a test album",
+    "created_at": "15-11-2006",
+    "last_updated": "15-11-2006"
+  }
+]
