@@ -123,6 +123,7 @@ function load_album_photos(album_id)
                         '<img src="' + photo.url + '" class="card-img-top" alt="' + (photo.caption || 'Photo') + '">' +
                         '<div class="card-body">' +
                             '<p class="card-text">' + (photo.caption || '') + '</p>' +
+                            '<button type="button" onclick="delete_photo(' + photo.photo_id + ')">✖</button>' +
                         '</div>' +
                     '</div>';
                 grid.appendChild(col);
@@ -158,5 +159,31 @@ function create_album(event)
     {
         console.error('Error creating album:', error);
         alert('Error creating album. Please try again.');
+    });
+}
+
+function delete_photo(photo_id)
+{
+    if (!confirm('Are you sure you want to delete this photo?'))
+    {
+        return;
+    }
+
+    fetch('/api/photos/' + photo_id,
+    {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data =>
+    {
+        if (current_album_id)
+        {
+            load_album_photos(current_album_id);
+        }
+    })
+    .catch(error =>
+    {
+        console.error('Error deleting photo:', error);
+        alert('Error deleting photo.');
     });
 }

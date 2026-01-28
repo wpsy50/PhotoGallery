@@ -2,6 +2,7 @@ import express from 'express';
 import fs from 'fs';
 import multer from 'multer';
 import path from 'path';
+
 const app = express();
 app.use('/data/uploads', express.static(path.join(process.cwd(), 'data/uploads')));
 const PORT = 3000
@@ -151,3 +152,30 @@ app.post('/api/photos', upload.single('photo_file'), (request, result) =>
 });
 
 app.use('/data/uploads', express.static(path.join(process.cwd(), 'data/uploads')));
+
+app.delete('/api/photos/:photo_id', (request, result) =>
+{
+    const photo_id = Number(request.params.photo_id);
+    const photo_index = photos.findIndex(p => p.photo_id === photo_id);
+
+    if (photo_index === -1)
+    {
+        return result.status(404).json({ error: 'Photo not found' });
+    }
+
+    const photo = photos[photo_index];
+    const file_path = path.join('./data/uploads/', path.basename(photo.url));
+
+    fs.unlink(file_path, error =>
+    {
+        if (error)
+        {
+            console.error('Error deleting file:', error);
+        }
+    });
+
+    photos.splice(photo_index, 1);
+    fs.writeFileSync(PHOTOS_PATH, JSON.stringify(photos, null, 2));
+
+    result.json({ message: 'Photo deleted successfully' });
+});
