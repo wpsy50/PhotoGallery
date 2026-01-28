@@ -21,6 +21,12 @@ function load_albums()
             var grid = document.getElementById('album_grid');
             grid.innerHTML = '';
 
+            if (albums.length === 0)
+            {
+                grid.innerHTML = '<div class="col-12"><p>No albums found. Create one using the form above.</p></div>';
+                return;
+            }
+
             albums.forEach(function(album)
             {
                 var col = document.createElement('div');
@@ -284,3 +290,5 @@ function delete_photo(photo_id)
         }
     });
 }
+
+document.getElementById('create_album_form').addEventListener('submit', create_album);
