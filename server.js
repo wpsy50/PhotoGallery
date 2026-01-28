@@ -143,7 +143,7 @@ app.post('/api/photos', upload.single('photo_file'), (request, result) =>
         album_id: Number(album_id),
         url: '/data/uploads/' + new_filename,
         caption: caption || '',
-        uploaded_at: new Date().toISOString().split('T')[0]
+        uploaded_at: new Date().toISOString()
     };
 
     photos.push(new_photo);
